@@ -3,4 +3,4 @@
 
 - import_tasks: install.yml
 - import_tasks: configure.yml
-- import_tasks: handlers.yml
+- import_tasks: restarter.yml
