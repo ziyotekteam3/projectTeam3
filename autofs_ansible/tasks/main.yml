@@ -1,0 +1,58 @@
+---
+# tasks file for ansible-role-autofs
+
+
+# ----- Setup -----
+- name: "Setup | apt | ensure autofs's package(s) present"
+  apt:
+    state: present
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages: "{{ autofs_pkgs[ ansible_system ] }}"
+  when: ansible_pkg_mgr == 'apt'
+
+- name: "Setup | yum | ensure autofs's package(s) present"
+  yum: name="{{ autofs_pkgs[ ansible_system ] }}"
+  when: ansible_pkg_mgr == 'yum'
+
+
+- name: "Setup | zyp | ensure autofs's package(s) present"
+  zypper: name="{{ autofs_pkgs[ ansible_system ] }}"
+  when: ansible_pkg_mgr == 'zypper'
+
+
+- name: "Setup | dnf | ensure autofs's package(s) present"
+  dnf: name="{{ autofs_pkgs[ ansible_system ] }}"
+  when: ansible_pkg_mgr == 'dnf'
+
+
+# ----- Config -----
+- name: "Config | all | ensure indirect map paths(s) exist"
+  file: path="{{ item.path }}" state=directory
+  with_items: "{{ autofs_indirect_maps }}"
+
+
+- name: "Config | all | create indirect map file(s) from template"
+  template: src="indirect_map.j2" dest="/etc/{{ item.name }}" mode=0644
+  with_items: "{{ autofs_indirect_maps }}"
+  notify: [ 'restart autofs', 'reload autofs']
+
+- name: "Config | all | add indirect map file(s) to autofs master file"
+  blockinfile:
+    dest: "{{ autofs_master[ ansible_system ] }}"
+    marker: "# {mark} MANAGED BY ANSIBLE ROLE benyanke.autofs_ng - MARK : {{ item.mark | default (item.path + item.name) }}"
+    block: |
+      {{ item.path }}    {{ item.name }} {{ item.options | default ("") }}
+  with_items: "{{ autofs_indirect_maps }}"
+  notify: [ 'restart autofs', 'reload autofs']
+
+
+# ----- Service -----
+- name: "Svc   |linux| ensure autofs starts at boot"
+  service: name=autofs state=started enabled=yes
+  when: ansible_system == 'Linux' and ansible_connection != 'chroot'
+
+- name: Enable autofs in chroot image
+  command: systemctl enable autofs
+  when: ansible_connection == 'chroot'
