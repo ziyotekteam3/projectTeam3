@@ -1,0 +1,7 @@
+---
+- name: nfs role running
+  hosts: dilnoza
+  user: ansible
+  become: true
+  roles:
+    - ansible-role-nfs
