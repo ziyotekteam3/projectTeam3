@@ -1,0 +1,6 @@
+---
+# defaults file for ntp
+#
+master_ntp1: prdx-ntp13.ziyotek3.local
+master_ntp2: prdx-ntp23.ziyotek3.local
+

@@ -1,0 +1,10 @@
+---
+# handlers file for ntp
+#
+- name: start_ntp_client
+  service:
+    name: ntpd
+    state: started
+    enabled: yes
+
+

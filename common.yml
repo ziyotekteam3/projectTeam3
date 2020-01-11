@@ -1,0 +1,28 @@
+---
+
+
+- hosts: jenkins
+  remote_user: ansible
+  become: yes
+  
+  tasks:
+    - name: install all initial packages
+      yum:
+        name: ['man', 'man-pages', 'mlocate', 'vim', 'bind-utils']
+        state: latest
+ 
+    - name: Enabling ssh-key only root access
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin without-password'
+      notify:
+        - restart_sshd
+      
+
+  handlers:
+    - name: restart_sshd
+      service:
+        name: sshd
+        state: restarted
+        enabled: true

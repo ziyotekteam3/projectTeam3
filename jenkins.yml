@@ -1,0 +1,10 @@
+---
+
+- hosts: jenkins
+  become: yes
+  roles:
+    - docker
+    - jenkins
+    - ntp
+
+

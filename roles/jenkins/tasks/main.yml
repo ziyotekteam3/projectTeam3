@@ -1,0 +1,43 @@
+---
+# tasks file for jenkins
+#
+- name: Ensure dependencies are installed.
+  package:
+    name:
+      - curl
+      - libselinux-python
+      - initscripts
+    state: present
+
+
+- name: Ensure Jenkins repo is installed.
+  get_url:
+    url: https://pkg.jenkins.io/redhat/jenkins.repo
+    dest: /etc/yum.repos.d/jenkins.repo
+    mode: 0644
+
+- name: Add jenkins repo GPG key.
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat/jenkins.io.key
+
+- name: ensure java is installed
+  package:
+    name: java
+    state: latest
+
+- name: Ensure Jenkins is installed.
+  package:
+    name: jenkins
+    state: present
+  notify: 
+    - start_jenkins
+
+- name: Open Firewall Port
+  firewalld:
+    zone: public
+    port: 8080/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+  ignore_errors: yes

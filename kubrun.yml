@@ -1,0 +1,7 @@
+---
+
+- hosts: kubernetes-master
+  become: yes
+  roles:
+   - docker
+   - kubernetes

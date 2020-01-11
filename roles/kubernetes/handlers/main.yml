@@ -1,0 +1,10 @@
+---
+# handlers file for kubernetes
+#
+#
+- name: start_kubelet
+  service:
+    name: kubelet
+    state: started
+    enabled: yes
+

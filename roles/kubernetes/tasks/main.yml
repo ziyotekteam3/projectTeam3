@@ -1,0 +1,75 @@
+---
+# tasks file for kubernetes
+#
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
+- name: disable selinux file
+  shell:
+    sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+
+- name: disable swap space
+  shell:
+    swapoff -a
+
+- name: add comment to swap on /etc/fstab
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '(^/dev/mapper/centos-swap.*)'
+    line: '# \1'
+    backrefs: yes
+    state: present
+
+- name: Enabling Bridge Firewall Rule
+  shell:
+    echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+  ignore_errors: yes
+
+
+- name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
+  sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: 1
+    state: present
+  ignore_errors: yes
+
+- name: ensure net.bridge.bridge-nf-call-iptables is set to 1
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    state: present
+  ignore_errors: yes
+
+- name: Conigure the Docker Cgroup Driver to systemd, enable and start Docker
+  shell: |
+    sed -i '/^ExecStart/ s/$/ --exec-opt native.cgroupdriver=systemd/' /usr/lib/systemd/system/docker.service
+    systemctl daemon-reload
+
+- name: add Kubernetes' YUM repository
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes YUM repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgcheck: yes
+
+- name: install kubelet, kubeadm, kubectl
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+  notify: start_kubelet
+
+- name: Ensure firewalld service is disabled and stopped
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+    masked: yes
+  ignore_errors: yes
+

@@ -1,0 +1,30 @@
+---
+# tasks file for ntp
+
+- name: add ntp service port to firewall
+  firewalld:
+    service: ntp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  ignore_errors: yes
+
+- name: remove chrony client package from the system
+  yum:
+    name: chrony
+    state: absent
+
+- name: install/check ntp package is installed
+  yum:
+    name: ntp
+    state: present
+
+- name: deploy ntp.conf file to the clints
+  template:
+    src: templates/ntp.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: start_ntp_client
+

@@ -1,0 +1,9 @@
+---
+
+- hosts: kubernetes-worker
+  remote_user: ansible
+  become: yes
+  roles:
+   - docker
+   - kubernetes
+

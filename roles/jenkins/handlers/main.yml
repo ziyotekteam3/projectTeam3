@@ -1,0 +1,10 @@
+---
+# handlers file for jenkins
+#
+- name: start_jenkins
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+
+
