@@ -1,0 +1,6 @@
+---
+  - hosts: dilnoza
+    user: ansible
+    become: true
+    roles:
+    - nagios
