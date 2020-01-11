@@ -1,0 +1,25 @@
+---
+- name: open 8181tcp
+  firewalld: 
+    port: 8181/tcp
+    permanent: yes
+    state: enabled
+- name: open8181udp
+  firewalld:
+    port: 8181/udp
+    permanent: yes
+    state: enabled
+- name: open 80tcp
+  firewalld:
+    port: 80/tcp
+    permanent: yes
+    state: enabled
+- name: open80udp
+  firewalld:
+    port: 80/udp
+    permanent: yes
+    state: enabled
+
+
+- name: restart firewall
+  service: name=firewalld state=restarted enabled=yes

@@ -1,0 +1,9 @@
+---
+#- name: installation of epelRelease
+#  yum:
+#    name: epel-release
+#    state: latest
+- name: Ensure EPEL is enabled 
+  yum: 
+    name: epel-release 
+    state: present 

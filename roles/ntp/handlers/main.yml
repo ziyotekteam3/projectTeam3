@@ -4,7 +4,7 @@
 - name: start_ntp_client
   service:
     name: ntpd
-    state: started
+    state: restarted
     enabled: yes
 
 

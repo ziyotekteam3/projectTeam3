@@ -1,0 +1,28 @@
+---
+- name: install packages 
+  yum:
+    name: ['samba', 'samba-common', 'samba-client' ]
+    state: latest
+
+- name: Creates directory
+  file:
+    path: /samba
+    state: directory
+    mode: 0777
+
+- name: Config /samba
+  raw: restorecon -R -v /samba
+
+- name: Touching team3 file
+  copy:
+    content: "Welcome to Team 3 world"
+    dest: /samba/team3.txt
+    mode: 0777
+
+- name: Add the user samba to the system
+  user:
+    name: samba
+
+- name: setting pswd of user samba
+  raw:  printf "password\npassword\n" | smbpasswd -a samba
+

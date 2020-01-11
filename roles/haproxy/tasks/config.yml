@@ -1,0 +1,23 @@
+---
+- name: replace httpd conf file with new one that has index.php
+  copy:
+    src: files/ha.cfg
+    dest: /etc/haproxy/haproxy.cfg 
+    force: yes
+    mode: 0755
+- name: Create /var/lib/haproxy
+  file:
+    path: /var/lib/haproxy
+    state: directory
+    mode: '0777'
+- name: create /var/lib/haproxy/stats file
+  file:
+    path: /var/lib/haproxy/stats
+    state: touch
+    mode: 0777
+- name: Create symbolic link 
+  file:
+    src: /usr/sbin/haproxy
+    dest: /usr/local/sbin/haproxy
+    state: link
+

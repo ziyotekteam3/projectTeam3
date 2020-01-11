@@ -1,0 +1,3 @@
+---
+- name: start and enable http
+  service: name=httpd state=restarted enabled=yes

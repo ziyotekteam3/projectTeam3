@@ -1,0 +1,13 @@
+---
+- name: replace httpd conf file with new one that has index.php
+  copy:
+    src: files/htphp.config
+    dest: /etc/httpd/conf/httpd.conf 
+    force: yes
+    mode: 0755
+- name: copy webcontent to servers
+  copy:
+    src: files/webContent/
+    dest: /var/www/html/
+    force: yes
+

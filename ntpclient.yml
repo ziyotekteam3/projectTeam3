@@ -1,0 +1,6 @@
+---
+
+- hosts: ntp-client
+  become: yes
+  roles:
+    - ntp

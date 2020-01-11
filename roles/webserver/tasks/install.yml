@@ -1,0 +1,5 @@
+---
+- name: installation of httpd and php
+  yum:
+    name: php
+    state: latest

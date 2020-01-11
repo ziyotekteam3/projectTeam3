@@ -1,0 +1,8 @@
+---
+- name: replace smb.con
+  copy:
+    src: templates/smb.j2
+    dest: /etc/samba/smb.conf 
+    force: yes
+    mode: 0644
+

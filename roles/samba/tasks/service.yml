@@ -1,0 +1,7 @@
+---
+- name: start and enable smb
+  service: name=smb state=restarted enabled=yes
+
+- name: start and enable nmb
+  service: name=nmb state=restarted enabled=yes
+

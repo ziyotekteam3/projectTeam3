@@ -1,0 +1,6 @@
+---
+- hosts: samba
+  become: true
+  become_user: root
+  roles:
+  - samba

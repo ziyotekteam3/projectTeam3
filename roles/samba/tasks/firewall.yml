@@ -1,0 +1,8 @@
+---
+- firewalld:
+    service: samba
+    permanent: yes
+    state: enabled
+
+- name: restart firewall
+  service: name=firewalld state=restarted enabled=yes
